@@ -1,0 +1,299 @@
+{
+  "intents": [
+    {
+      "intent": "comprar_passagem_aerea",
+      "examples": [
+        {
+          "text": "comoprar passagem"
+        },
+        {
+          "text": "compra de ticket aereo"
+        },
+        {
+          "text": "obter ticket de viagem"
+        },
+        {
+          "text": "opa quero adquirir passagem"
+        },
+        {
+          "text": "quero comprar passagem de aviao"
+        },
+        {
+          "text": "quero comprar uma passagem aerea"
+        }
+      ],
+      "description": "Intenção sobre passagens aéreas"
+    },
+    {
+      "intent": "greetings",
+      "examples": [
+        {
+          "text": "beleza"
+        },
+        {
+          "text": "oi"
+        },
+        {
+          "text": "ola"
+        }
+      ]
+    },
+    {
+      "intent": "pergunta_sobre_destinos",
+      "examples": [
+        {
+          "text": "Para onde eu poderia ir?"
+        },
+        {
+          "text": "para onde tem passagens?"
+        },
+        {
+          "text": "quais os destinos"
+        },
+        {
+          "text": "quais são os locais que possuem passagens disponiveis"
+        }
+      ]
+    }
+  ],
+  "entities": [
+    {
+      "entity": "locais",
+      "values": [
+        {
+          "type": "synonyms",
+          "value": "rio de janeiro",
+          "synonyms": [
+            "cidade maravilhosa",
+            "rj"
+          ]
+        },
+        {
+          "type": "synonyms",
+          "value": "sao paulo",
+          "synonyms": [
+            "sp",
+            "terra da garoa"
+          ]
+        }
+      ],
+      "fuzzy_match": true
+    },
+    {
+      "entity": "sys-date",
+      "values": [],
+      "fuzzy_match": true
+    }
+  ],
+  "metadata": {
+    "api_version": {
+      "major_version": "v2",
+      "minor_version": "2018-11-08"
+    }
+  },
+  "dialog_nodes": [
+    {
+      "type": "standard",
+      "title": "Bem-vindo",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Olá. Como posso te ajudar?"
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "conditions": "welcome || #greetings",
+      "dialog_node": "Bem-vindo"
+    },
+    {
+      "type": "standard",
+      "title": "Em outros casos",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Eu não entendi. Você pode tentar reformular a frase."
+              },
+              {
+                "text": "Você pode reformular sua afirmação? Eu não estou entendendo."
+              },
+              {
+                "text": "Eu não entendi o sentido."
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "conditions": "anything_else",
+      "dialog_node": "Em outros casos",
+      "previous_sibling": "node_2_1607121439454",
+      "disambiguation_opt_out": true
+    },
+    {
+      "type": "event_handler",
+      "output": {
+        "text": {
+          "values": [
+            "Ah para onde gostaria de ir?"
+          ],
+          "selection_policy": "sequential"
+        }
+      },
+      "parent": "slot_2_1607121342128",
+      "event_name": "focus",
+      "dialog_node": "handler_5_1607121342129",
+      "previous_sibling": "handler_6_1607121342129"
+    },
+    {
+      "type": "event_handler",
+      "output": {},
+      "parent": "slot_2_1607121342128",
+      "context": {
+        "locais": "@locais"
+      },
+      "conditions": "@locais",
+      "event_name": "input",
+      "dialog_node": "handler_6_1607121342129"
+    },
+    {
+      "type": "event_handler",
+      "output": {},
+      "parent": "slot_2_1607120950896",
+      "context": {
+        "data": "@sys-date"
+      },
+      "conditions": "@sys-date",
+      "event_name": "input",
+      "dialog_node": "handler_7_1607120950904"
+    },
+    {
+      "type": "event_handler",
+      "output": {
+        "text": {
+          "values": [
+            "Humm, não entendi a data! Poderia informar?"
+          ],
+          "selection_policy": "sequential"
+        }
+      },
+      "parent": "slot_2_1607120950896",
+      "event_name": "focus",
+      "dialog_node": "handler_8_1607120950904",
+      "previous_sibling": "handler_7_1607120950904"
+    },
+    {
+      "type": "standard",
+      "title": "Compra da passagem",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Para onde e quando?"
+              },
+              {
+                "text": "Ah legal para onde gostaria de ir? E qual a data da viagem?"
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "random"
+          }
+        ]
+      },
+      "conditions": "#comprar_passagem_aerea",
+      "dialog_node": "node_2_1607120524458",
+      "previous_sibling": "Bem-vindo"
+    },
+    {
+      "type": "folder",
+      "title": "FAQ",
+      "digress_in": "returns",
+      "dialog_node": "node_2_1607121439454",
+      "previous_sibling": "node_2_1607120524458"
+    },
+    {
+      "type": "standard",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Os destinos mais procurados são: São Paulo, Rio de Janeiro, Salvador, Floripa."
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "parent": "node_2_1607121439454",
+      "conditions": "#pergunta_sobre_destinos",
+      "dialog_node": "node_2_1607121511123"
+    },
+    {
+      "type": "frame",
+      "title": "Confirmação de dados",
+      "output": {
+        "generic": [
+          {
+            "values": [
+              {
+                "text": "Ah legal uma passagem para $data e o local desejado foi $locais."
+              }
+            ],
+            "response_type": "text",
+            "selection_policy": "sequential"
+          }
+        ]
+      },
+      "parent": "node_2_1607120524458",
+      "conditions": "true",
+      "dialog_node": "node_4_1607120692979"
+    },
+    {
+      "type": "slot",
+      "output": {},
+      "parent": "node_4_1607120692979",
+      "variable": "$data",
+      "dialog_node": "slot_2_1607120950896"
+    },
+    {
+      "type": "slot",
+      "output": {},
+      "parent": "node_4_1607120692979",
+      "variable": "$locais",
+      "dialog_node": "slot_2_1607121342128",
+      "previous_sibling": "slot_2_1607120950896"
+    }
+  ],
+  "counterexamples": [],
+  "system_settings": {
+    "disambiguation": {
+      "prompt": "Você quis dizer:",
+      "enabled": true,
+      "randomize": true,
+      "max_suggestions": 5,
+      "suggestion_text_policy": "title",
+      "none_of_the_above_prompt": "Nenhuma das anteriores"
+    },
+    "system_entities": {
+      "enabled": true
+    },
+    "human_agent_assist": {
+      "prompt": "Você quis dizer:"
+    }
+  },
+  "learning_opt_out": false,
+  "name": "Skill-Passagem-Aerea",
+  "language": "pt-br",
+  "description": "Compra de passagens aéreas"
+}
